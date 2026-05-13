@@ -100,6 +100,11 @@ export default function Home() {
         },
       });
 
+      if (response.status === 404) {
+        setCourses([]);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(
           `Falha ao buscar cursos: ${response.status} ${response.statusText}`
