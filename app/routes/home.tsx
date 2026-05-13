@@ -8,10 +8,11 @@ type Course = {
   id: string;
   code: string;
   name: string;
-  instructor: string;
-  createdAt: string;
+  instructor_name: string;
+  instructor_email: string;
+  date: string;
   status: CourseStatus;
-  adminEmail: string;
+  admin_email: string;
 };
 
 const ADMIN_ROLE = "ADMIN";
@@ -63,7 +64,8 @@ export default function Home() {
   const [formState, setFormState] = useState({
     code: "",
     name: "",
-    instructor: "",
+    instructor_name: "",
+    instructor_email: "",
     status: "DISPONIVEL" as CourseStatus,
   });
 
@@ -144,8 +146,11 @@ export default function Home() {
         body: JSON.stringify({
           code: formState.code,
           name: formState.name,
-          instructor: formState.instructor,
+          instructor_name: formState.instructor_name,
+          instructor_email: formState.instructor_email,
+          date: new Date().toISOString(),
           status: formState.status,
+          admin_email: user?.email ?? "",
         }),
       });
 
@@ -155,7 +160,13 @@ export default function Home() {
         );
       }
 
-      setFormState({ code: "", name: "", instructor: "", status: "DISPONIVEL" });
+      setFormState({
+        code: "",
+        name: "",
+        instructor_name: "",
+        instructor_email: "",
+        status: "DISPONIVEL",
+      });
       await loadCourses();
     } catch (err) {
       handleError(
@@ -301,7 +312,7 @@ export default function Home() {
                             <td className="px-4 py-4 text-slate-700">{course.id}</td>
                             <td className="px-4 py-4 text-slate-700">{course.code}</td>
                             <td className="px-4 py-4 text-slate-700">{course.name}</td>
-                            <td className="px-4 py-4 text-slate-700">{course.instructor}</td>
+                            <td className="px-4 py-4 text-slate-700">{course.instructor_name}</td>
                             <td className="px-4 py-4 text-slate-700">
                               <span
                                 className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
@@ -313,8 +324,8 @@ export default function Home() {
                                 {course.status}
                               </span>
                             </td>
-                            <td className="px-4 py-4 text-slate-700">{formatDate(course.createdAt)}</td>
-                            <td className="px-4 py-4 text-slate-700">{course.adminEmail}</td>
+                            <td className="px-4 py-4 text-slate-700">{formatDate(course.date)}</td>
+                            <td className="px-4 py-4 text-slate-700">{course.admin_email}</td>
                             {isAdmin ? (
                               <td className="px-4 py-4">
                                 <button
@@ -367,9 +378,20 @@ export default function Home() {
                 <label className="block">
                   <span className="text-sm font-semibold text-slate-700">Nome do instrutor</span>
                   <input
-                    value={formState.instructor}
-                    onChange={(event) => setFormState((current) => ({ ...current, instructor: event.target.value }))}
+                    value={formState.instructor_name}
+                    onChange={(event) => setFormState((current) => ({ ...current, instructor_name: event.target.value }))}
                     required
+                    className="mt-2 w-full rounded-3xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none ring-slate-200 transition focus:ring-2"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="text-sm font-semibold text-slate-700">Email do instrutor</span>
+                  <input
+                    value={formState.instructor_email}
+                    onChange={(event) => setFormState((current) => ({ ...current, instructor_email: event.target.value }))}
+                    required
+                    type="email"
                     className="mt-2 w-full rounded-3xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none ring-slate-200 transition focus:ring-2"
                   />
                 </label>
