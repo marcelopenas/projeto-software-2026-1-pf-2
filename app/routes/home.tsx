@@ -31,8 +31,17 @@ function getRolesFromUser(user: any): string[] {
   return [];
 }
 
-function formatDate(timestamp: string) {
-  return new Date(timestamp).toLocaleString("pt-BR", {
+function formatDate(timestamp: string | undefined) {
+  if (!timestamp) {
+    return "—";
+  }
+
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) {
+    return "—";
+  }
+
+  return date.toLocaleString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -65,7 +74,6 @@ export default function Home() {
     code: "",
     name: "",
     instructor_name: "",
-    instructor_email: "",
     status: "DISPONIVEL" as CourseStatus,
   });
 
@@ -147,10 +155,9 @@ export default function Home() {
           code: formState.code,
           name: formState.name,
           instructor_name: formState.instructor_name,
-          instructor_email: formState.instructor_email,
+          instructor_email: user?.email ?? "",
           date: new Date().toISOString(),
           status: formState.status,
-          admin_email: user?.email ?? "",
         }),
       });
 
@@ -164,7 +171,6 @@ export default function Home() {
         code: "",
         name: "",
         instructor_name: "",
-        instructor_email: "",
         status: "DISPONIVEL",
       });
       await loadCourses();
@@ -321,7 +327,7 @@ export default function Home() {
                                     : "bg-rose-100 text-rose-700"
                                 }`}
                               >
-                                {course.status}
+                                {course.status ?? "DESCONHECIDO"}
                               </span>
                             </td>
                             <td className="px-4 py-4 text-slate-700">{formatDate(course.date)}</td>
@@ -385,16 +391,9 @@ export default function Home() {
                   />
                 </label>
 
-                <label className="block">
-                  <span className="text-sm font-semibold text-slate-700">Email do instrutor</span>
-                  <input
-                    value={formState.instructor_email}
-                    onChange={(event) => setFormState((current) => ({ ...current, instructor_email: event.target.value }))}
-                    required
-                    type="email"
-                    className="mt-2 w-full rounded-3xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none ring-slate-200 transition focus:ring-2"
-                  />
-                </label>
+                <p className="text-sm text-slate-600">
+                  O e-mail do curso será preenchido automaticamente com o usuário conectado.
+                </p>
 
                 <label className="block">
                   <span className="text-sm font-semibold text-slate-700">Status</span>
