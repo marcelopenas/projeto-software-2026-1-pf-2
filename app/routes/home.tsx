@@ -16,6 +16,7 @@ type Course = {
 
 const ADMIN_ROLE = "ADMIN";
 const USER_ROLE = "USER";
+const ADMIN_EMAIL = "admin@social.com";
 const ROLE_CLAIM = import.meta.env.VITE_AUTH0_ROLE_CLAIM || "https://example.com/roles";
 
 function getRolesFromUser(user: any): string[] {
@@ -50,7 +51,8 @@ export default function Home() {
   } = useAuth0();
 
   const roles = useMemo(() => getRolesFromUser(user), [user]);
-  const isAdmin = roles.includes(ADMIN_ROLE);
+  const isAdmin =
+    roles.includes(ADMIN_ROLE) || user?.email === ADMIN_EMAIL;
   const isUser = roles.includes(USER_ROLE);
 
   const [courses, setCourses] = useState<Course[]>([]);
@@ -265,6 +267,7 @@ export default function Home() {
                   <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
                     <thead className="bg-slate-100">
                       <tr>
+                        <th className="px-4 py-3 font-medium text-slate-600">ID</th>
                         <th className="px-4 py-3 font-medium text-slate-600">Código</th>
                         <th className="px-4 py-3 font-medium text-slate-600">Nome</th>
                         <th className="px-4 py-3 font-medium text-slate-600">Instrutor</th>
@@ -290,6 +293,7 @@ export default function Home() {
                       ) : (
                         courses.map((course) => (
                           <tr key={course.id}>
+                            <td className="px-4 py-4 text-slate-700">{course.id}</td>
                             <td className="px-4 py-4 text-slate-700">{course.code}</td>
                             <td className="px-4 py-4 text-slate-700">{course.name}</td>
                             <td className="px-4 py-4 text-slate-700">{course.instructor}</td>
