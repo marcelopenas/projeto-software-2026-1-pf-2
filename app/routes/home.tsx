@@ -331,7 +331,7 @@ export default function Home() {
                               </span>
                             </td>
                             <td className="px-4 py-4 text-slate-700">{formatDate(course.date)}</td>
-                            <td className="px-4 py-4 text-slate-700">{course.admin_email}</td>
+                            <td className="px-4 py-4 text-slate-700">{course.instructor_email}</td>
                             {isAdmin ? (
                               <td className="px-4 py-4">
                                 <button
